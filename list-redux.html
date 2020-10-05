@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8">
+  <title>Deletable list with React.js and Redux.js</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.7.2/prop-types.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.5/redux.js" integrity="sha512-hIeMcj07bbpdm6W49lxdLrW7D1eLJF54UP0dQ7Ts3mPqa/Zjc51zI7l1A+QlHhijEluigbBfwLM9YkkLmtkb0A==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/7.2.1/react-redux.js" integrity="sha512-CifX9E4njN8fjzYFK7mX/FR1+z5rotvOo5sGnCb+37rI8Z+RdxBxq4eBrkPLP18JYVHSN9GKY8R8nka4ABo34g==" crossorigin="anonymous"></script>
+  <style type="text/css">
+    #wrapper {
+      padding: 20px;
+    }
+
+    #myReactApp {
+      width: 800px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+<div id="wrapper">
+  <div id="myReactApp"></div>
+</div>
+<script type="text/babel">
+
+const ACTION_ADD = 'add';
+const ACTION_DELETE = 'delete';
+
+function actionAdd(newObject) {
+    return {
+        type: ACTION_ADD,
+        newObject
+    }
+}
+
+function actionDelete(index) {
+    return {
+        type: ACTION_DELETE,
+        index
+    }
+}
+
+const initialState = {
+    list: []
+};
+
+function reducer(state = initialState, action) {
+  switch (action.type) {
+      case ACTION_ADD: {
+          return {
+              ...state,
+              list: [...state.list, action.newObject]
+          };
+      }
+      case ACTION_DELETE: {
+          state.list.splice(action.index, 1);
+          return {
+              ...state,
+              list: [...state.list]
+          };
+      }
+      default: {
+          return state;
+      }
+
+  }
+}
+
+const store = Redux.createStore(reducer);
+
+function ListItem({ index, item}) {
+  const dispatch = ReactRedux.useDispatch();
+  return (
+    <div>
+      { item }
+      &nbsp;
+      <a onClick={() => dispatch(actionDelete(index))}>
+        [X]
+      </a>
+    </div>
+  );
+}
+
+function List() {
+  const list = ReactRedux.useSelector(state => state.list);
+  return (
+    <div>
+      {
+        list.map((item, key) => {
+          return (
+            <ListItem
+              key={ key }
+              index={ key }
+              item={ item }
+            />
+          )
+        })
+      }
+    </div>
+  );
+}
+
+function Form (){
+  const [value, setValue] = React.useState('');
+  const dispatch = ReactRedux.useDispatch();
+
+  function handleSave(event) {
+    event.preventDefault();
+    dispatch(actionAdd(value));
+    setValue('');
+  }
+
+  return (
+    <div>
+      <form>
+        <input
+          type="text"
+          value={ value }
+          onChange={
+            (event) => setValue(event.target.value)
+          }
+        />
+        <button
+          onClick={ handleSave }
+        >
+          save
+        </button>
+      </form>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <Form/>
+      <List/>
+    </>
+  );
+}
+
+const app = <ReactRedux.Provider store={store}><App/></ReactRedux.Provider>;
+ReactDOM.render(app, document.getElementById('myReactApp'));
+</script>
+</body>
+
+</html>
