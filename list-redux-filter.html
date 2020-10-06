@@ -12,6 +12,7 @@
   <script src="libraries/babel.min.js"></script>
   <script src="libraries/redux.js"></script>
   <script src="libraries/react-redux.js"></script>
+  <script src="libraries/reselect.js"></script>
   <style type="text/css">
     #wrapper {
       padding: 20px;
@@ -140,6 +141,18 @@ function reducer(state = initialState, action) {
   }
 }
 
+const selectFilteredItems = Reselect.createSelector(
+  state => state.list,
+  state => state.filter,
+  (list, filter) => {
+      switch (filter) {
+        case FilterValue.DONE: return list.filter(item => item.isDone);
+        case FilterValue.UNDONE: return list.filter(item => !item.isDone);
+        default: return list;
+      }
+    }
+);
+
 const store = Redux.createStore(reducer);
 
 function ListItem({item}) {
@@ -156,13 +169,7 @@ function ListItem({item}) {
 }
 
 function List() {
-  const list = ReactRedux.useSelector(state => {
-      switch (state.filter) {
-          case FilterValue.DONE: return state.list.filter(item => item.isDone);
-          case FilterValue.UNDONE: return state.list.filter(item => !item.isDone);
-          default: return state.list;
-      }
-  });
+  const list = ReactRedux.useSelector(selectFilteredItems);
   return (
     <div className="list">
       {
