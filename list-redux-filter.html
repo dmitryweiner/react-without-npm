@@ -156,6 +156,21 @@ const selectFilteredItems = Reselect.createSelector(
     }
 );
 
+const selectAllItemsCount = Reselect.createSelector(
+  listSelector,
+  list => list.length
+);
+
+const selectDoneItemsCount = Reselect.createSelector(
+  listSelector,
+  list => list.filter(item => item.isDone).length
+);
+
+const selectUndoneItemsCount = Reselect.createSelector(
+  listSelector,
+  list => list.filter(item => !item.isDone).length
+);
+
 const store = Redux.createStore(reducer);
 
 function ListItem({item}) {
@@ -222,6 +237,9 @@ function Form (){
 function Filter() {
   const dispatch = ReactRedux.useDispatch();
   const filter = ReactRedux.useSelector(state => state.filter);
+  const allCount = ReactRedux.useSelector(selectAllItemsCount);
+  const doneCount = ReactRedux.useSelector(selectDoneItemsCount);
+  const undoneCount = ReactRedux.useSelector(selectUndoneItemsCount);
 
   function handleClick(selected) {
       dispatch(actionSetFilter(selected));
@@ -232,21 +250,21 @@ function Filter() {
       className={filter === FilterValue.ALL ? 'active' : ''}
       onClick={() => handleClick(FilterValue.ALL)}
     >
-      all
+      all ({allCount})
     </a>
     &nbsp;
     <a
       className={filter === FilterValue.DONE ? 'active' : ''}
       onClick={() => handleClick(FilterValue.DONE)}
     >
-      done
+      done ({doneCount})
     </a>
     &nbsp;
     <a
       className={filter === FilterValue.UNDONE ? 'active' : ''}
       onClick={() => handleClick(FilterValue.UNDONE)}
     >
-      undone
+      undone ({undoneCount})
     </a>
   </div>;
 }
