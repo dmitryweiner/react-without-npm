@@ -43,7 +43,7 @@
     }
 
     .filter .active {
-      font-weight: bold;
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -141,9 +141,12 @@ function reducer(state = initialState, action) {
   }
 }
 
+const listSelector = state => state.list;
+const filterSelector = state => state.filter;
+
 const selectFilteredItems = Reselect.createSelector(
-  state => state.list,
-  state => state.filter,
+  listSelector,
+  filterSelector,
   (list, filter) => {
       switch (filter) {
         case FilterValue.DONE: return list.filter(item => item.isDone);
