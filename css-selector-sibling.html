@@ -1,0 +1,56 @@
+<html>
+<head>
+<style>
+li.class, .another-lass {
+  color: red;
+  background-color: lawngreen;
+}
+
+li.class, .another-lass {
+  color: red;
+}
+
+li.class, .another-lass {
+  background-color: lawngreen;
+}
+*              {} /* a=0 b=0 c=0 -> специфичность = 0   */
+li             {} /* a=0 b=0 c=1 -> специфичность = 1   */
+li:first-line  {} /* a=0 b=0 c=2 -> специфичность = 2   */
+ul li          {} /* a=0 b=0 c=2 -> специфичность = 2   */
+ul ol+li       {} /* a=0 b=0 c=3 -> специфичность = 3   */
+ul li.red      {} /* a=0 b=1 c=2 -> специфичность = 12  */
+li.red.level   {} /* a=0 b=2 c=1 -> специфичность = 21  */
+#t34           {} /* a=1 b=0 c=0 -> специфичность = 100 */
+#content #wrap {} /* a=2 b=0 c=0 -> специфичность = 200 */
+.list {
+  list-style-type: circle;
+}
+.list .list-item {
+  margin: 10px;
+}
+.list .list-item p {
+  color: darkgreen;
+}
+
+.list {
+  list-style-type: circle;
+  .list-item {
+    margin: 10px;
+    p {
+      color: darkgreen;
+    }
+  }
+}
+</style>
+
+</head>
+<body>
+<ul>
+  <li>One</li>
+  <li>Two!</li>
+  <li>Three</li>
+</ul>
+
+
+</body>
+</html>
